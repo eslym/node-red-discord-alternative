@@ -1,0 +1,196 @@
+<script type="text/javascript">
+    RED.nodes.registerType('{{basename}}', {
+        category: 'discord',
+        color: '#7289da',
+        defaults: {
+            name: {
+                value: "",
+                required: false
+            },
+            client: {
+                value: "",
+                required: true,
+                type: "discord.client"
+            },
+            store: {
+                value: null,
+                required: true,
+            },
+            key: {
+                value: "bot",
+                require: true,
+            },
+            to: {
+                value: null,
+                type: "*[]",
+            }
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: "discord.png",
+        label: function () {
+            return this.name || 'Inject';
+        },
+        paletteLabel: 'Inject',
+        oneditprepare: function () {
+            let node = this;
+            let scope = node.to || [];
+
+            this._resize = function () {
+                let rows = $("#dialog-form>div:not(.node-input-target-list-row)");
+                let height = $("#dialog-form").height();
+                for (let i = 0; i < rows.length; i++) {
+                    height -= $(rows[i]).outerHeight(true);
+                }
+                let editorRow = $("#dialog-form>div.node-input-target-list-row");
+                editorRow.css("height", height + "px");
+            };
+
+            let store = this.store || RED.settings.context.default;
+
+            $('#node-input-store').append(
+                    RED.settings.context.stores.map((v) => {
+                        return $(document.createElement('option'))
+                                .attr('value', v)
+                                .text(v);
+                    })
+            ).find(`[value="${store}"]`)
+                    .attr('selected', '');
+
+            let candidateNodes = RED.nodes.filterNodes({z: node.z});
+            let dirList = $("#node-input-inject-target-container-div")
+                    .css({width: "100%", height: "100%"})
+                    .treeList({multi: true}).on("treelistitemmouseover", function (e, item) {
+                        item.node.highlighted = true;
+                        item.node.dirty = true;
+                        RED.view.redraw();
+                    }).on("treelistitemmouseout", function (e, item) {
+                        item.node.highlighted = false;
+                        item.node.dirty = true;
+                        RED.view.redraw();
+                    })
+            let search = $("#node-input-inject-target-filter").searchBox({
+                style: "compact",
+                delay: 300,
+                change: function () {
+                    let val = $(this).val().trim().toLowerCase();
+                    if (val === "") {
+                        dirList.treeList("filter", null);
+                        search.searchBox("count", "");
+                    } else {
+                        let count = dirList.treeList("filter", function (item) {
+                            return item.label.toLowerCase().indexOf(val) > -1 || item.node.type.toLowerCase().indexOf(val) > -1
+                        });
+                        search.searchBox("count", count + " / " + candidateNodes.length);
+                    }
+                }
+            });
+            let allChecked = true;
+            let items = [];
+            let nodeItemMap = {};
+
+            candidateNodes.forEach(function (n) {
+                if (n.id === node.id || n.type !== 'function') {
+                    return;
+                }
+                let isChecked = scope.indexOf(n.id) !== -1;
+
+                allChecked = allChecked && isChecked;
+
+                let nodeDef = RED.nodes.getType(n.type);
+                let label;
+                if (nodeDef) {
+                    let l = nodeDef.label;
+                    label = (typeof l === "function" ? l.call(n) : l) || "";
+                }
+                if (!nodeDef || !label) {
+                    label = n.type;
+                }
+                nodeItemMap[n.id] = {
+                    node: n,
+                    label: label,
+                    sublabel: '',
+                    selected: isChecked,
+                    checkbox: true
+                };
+                items.push(nodeItemMap[n.id]);
+            });
+            dirList.treeList('data', items);
+
+            $("#node-input-inject-target-select").on("click", function (e) {
+                e.preventDefault();
+                let preselected = dirList.treeList('selected').map(function (n) {
+                    return n.node.id
+                });
+                RED.tray.hide();
+                RED.view.selectNodes({
+                    selected: preselected,
+                    onselect: function (selection) {
+                        RED.tray.show();
+                        let newlySelected = {};
+                        selection.forEach(function (n) {
+                            newlySelected[n.id] = true;
+                            if (nodeItemMap[n.id]) {
+                                nodeItemMap[n.id].treeList.select(true);
+                            }
+                        })
+                        preselected.forEach(function (id) {
+                            if (!newlySelected[id]) {
+                                nodeItemMap[id].treeList.select(false);
+                            }
+                        })
+                    },
+                    oncancel: function () {
+                        RED.tray.show();
+                    },
+                    filter: function (n) {
+                        return n.id !== node.id;
+                    }
+                });
+            })
+        },
+        oneditsave: function () {
+            this.to = $("#node-input-inject-target-container-div")
+                    .treeList('selected').map(function (i) {
+                        return i.node.id;
+                    });
+        },
+        oneditresize: function (size) {
+            this._resize();
+        }
+    });
+</script>
+<script type="text/html" data-template-name="{{basename}}">
+        {{> input-field property="name" label="Name" placeholder="Name" }}
+        {{> input-field property="client" label="Client" placeholder="Discord Client" }}
+        {{#> select-field property="store" label="Context Store" }}
+        {{/select-field}}
+    <p>Please use memory context store for this purpose, configure 1 if there is none.</p>
+        {{> input-field property="key" label="Context Key" placeholder="Context Key" }}
+    <button id="node-input-inject-target-select" class="red-ui-button">Select Nodes To Inject</button>
+    <div class="form-row node-input-target-row node-input-target-list-row"
+         style="position: relative; min-height: 100px">
+        <div style="position: absolute; top: -30px; right: 0;"><input type="text" id="node-input-inject-target-filter">
+        </div>
+        <div id="node-input-inject-target-container-div"></div>
+    </div>
+</script>
+<script type="text/html" data-help-name="{{basename}}">
+    <p>Inject discord client into node context for advance use.</p>
+    <p>Use <code>let bot = node.context().get('bot');</code> to retrieve discord client from context.</p>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        {{#>field-def name="client" type="discord.client" }}
+            The discord client which use for this node.
+        {{/field-def}}
+    </dl>
+    <h3>Output</h3>
+    <dl class="message-properties">
+        {{#> field-def name='node' type="string" }}
+            Node ID which failed with inject.
+        {{/field-def}}
+        {{#> field-def name='payload' type="object" }}
+            The serialized error object.
+        {{/field-def}}
+    </dl>
+</script>

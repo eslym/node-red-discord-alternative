@@ -1,0 +1,96 @@
+[
+  {
+    "id": "05c9f11be493dba7",
+    "type": "discord.event",
+    "z": "2146aaf065441cfe",
+    "name": "",
+    "client": "",
+    "event": "guildMemberAdd",
+    "x": 140,
+    "y": 160,
+    "wires": [
+      [
+        "8c6220284d94ffbc"
+      ]
+    ]
+  },
+  {
+    "id": "8c6220284d94ffbc",
+    "type": "switch",
+    "z": "2146aaf065441cfe",
+    "name": "Filter Guild",
+    "property": "payload.guildID",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "eq",
+        "v": "850152202226892860",
+        "vt": "str"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 1,
+    "x": 330,
+    "y": 160,
+    "wires": [
+      [
+        "4456c908b75d8d83",
+        "8864d1a608b962f1"
+      ]
+    ]
+  },
+  {
+    "id": "4456c908b75d8d83",
+    "type": "discord.memberRole",
+    "z": "2146aaf065441cfe",
+    "name": "Assign Role",
+    "client": "",
+    "guild": "payload.guildID",
+    "guildsrc": "msg",
+    "member": "payload.userID",
+    "membersrc": "msg",
+    "role": "883572548581875722",
+    "rolesrc": "str",
+    "action": "add",
+    "actionsrc": "str",
+    "x": 510,
+    "y": 160,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "8864d1a608b962f1",
+    "type": "template",
+    "z": "2146aaf065441cfe",
+    "name": "Prepare Greeting",
+    "field": "payload",
+    "fieldType": "msg",
+    "format": "handlebars",
+    "syntax": "mustache",
+    "template": "Welcome! <@{{payload.userID}}>",
+    "output": "str",
+    "x": 530,
+    "y": 220,
+    "wires": [
+      [
+        "79dce2379b1049c0"
+      ]
+    ]
+  },
+  {
+    "id": "79dce2379b1049c0",
+    "type": "discord.send",
+    "z": "2146aaf065441cfe",
+    "name": "",
+    "client": "",
+    "channel": "850152202226892863",
+    "src": "str",
+    "x": 720,
+    "y": 220,
+    "wires": [
+      []
+    ]
+  }
+]

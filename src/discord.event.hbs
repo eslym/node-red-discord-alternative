@@ -1,0 +1,62 @@
+<script type="text/javascript">
+    RED.nodes.registerType('{{basename}}', {
+        category: 'discord',
+        color: '#7289da',
+        defaults: {
+            name: {
+                value: "",
+                required: false
+            },
+            client: {
+                value: "",
+                required: true,
+                type: "discord.client"
+            },
+            event: {
+                value: "",
+                required: true,
+            }
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: "discord.png",
+        label: function () {
+            return this.name || 'Listen ' + this.event || 'Listen';
+        },
+        paletteLabel: 'Listen',
+    });
+</script>
+<script type="text/html" data-template-name="{{basename}}">
+        {{> input-field property="name" label="Name" placeholder="Name" }}
+        {{> input-field property="client" label="Client" placeholder="Discord Client" }}
+        {{#> select-field property="event" label="Event"}}
+            {{#each data.events }}
+            <optgroup label="{{ @key }}">
+                {{#each this }}
+                    <option value="{{ this }}">{{ this }}</option>
+                {{/each}}
+            </optgroup>
+            {{/each}}
+        {{/select-field}}
+</script>
+<script type="text/html" data-help-name="{{basename}}">
+    <p>Listen to a event from discord.</p>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        {{#>field-def name="client" type="discord.client" }}
+            The discord client which use for this node.
+        {{/field-def}}
+        {{#>field-def name="event" type="string" }}
+            The event to listen from discord.
+        {{/field-def}}
+    </dl>
+    <h3>Output</h3>
+    <dl class="message-properties">
+        {{#> field-def name='topic' type="string" }}
+            The event triggered.
+        {{/field-def}}
+        {{#> field-def name='payload' type="object | array" }}
+            The object of event parameter or the array of multiple event parameters if any.
+        {{/field-def}}
+    </dl>
+</script>

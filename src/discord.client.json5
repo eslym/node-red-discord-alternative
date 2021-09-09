@@ -1,0 +1,9 @@
+{
+  partials: {
+    'USER':  'User',
+    'CHANNEL':  'Channel',
+    'GUILD_MEMBER':  'Guild Member',
+    'MESSAGE':  'Message',
+    'REACTION':  'Reaction'
+  }
+}

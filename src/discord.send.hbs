@@ -1,0 +1,69 @@
+<script type="text/javascript">
+    RED.nodes.registerType('{{basename}}', {
+        category: 'discord',
+        color: '#7289da',
+        defaults: {
+            name: {
+                value: "",
+                required: false
+            },
+            client: {
+                value: "",
+                required: true,
+                type: "discord.client"
+            },
+            channel: {
+                value: "channelID",
+                required: true,
+            },
+            src: {
+                value: "msg",
+                required: true,
+            }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "discord.png",
+        label: function () {
+            return this.name || 'Send Message';
+        },
+        paletteLabel: 'Send Message',
+        oneditprepare: function(){
+            $('#node-input-channel').typedInput({
+                default: 'msg',
+                types: ['msg', 'flow', 'global', 'env', 'str'],
+                typeField: '#node-input-src',
+            });
+        }
+    });
+</script>
+<script type="text/html" data-template-name="{{basename}}">
+        {{> input-field property="name" label="Name" placeholder="Name" }}
+        {{> input-field property="client" label="Client" placeholder="Discord Client" }}
+        {{> input-field property="channel" label="Channel ID" placeholder="Channel to Send Message" }}
+    <input type="hidden" id="node-input-src"/>
+</script>
+<script type="text/html" data-help-name="{{basename}}">
+    <p>Send a message to discord</p>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        {{#>field-def name="client" type="discord.client" }}
+            The discord client which use for this node.
+        {{/field-def}}
+        {{#>field-def name="channel" }}
+            The channel id to send the message. It could be extract from <code>msg</code>, context, or a static string.
+        {{/field-def}}
+    </dl>
+    <h3>Input</h3>
+    <dl class="message-properties">
+        {{#>field-def name="payload" type="MessageOptions" }}
+            The message to send, please refer to <a href="https://discord.js.org/#/docs/main/stable/typedef/MessageOptions" target="_blank"><code>MessageOptions</code></a>
+        {{/field-def}}
+    </dl>
+    <h3>Output</h3>
+    <dl class="message-properties">
+        {{#> field-def name='payload' type="object" }}
+            The message itself which sent
+        {{/field-def}}
+    </dl>
+</script>

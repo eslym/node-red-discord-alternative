@@ -1,0 +1,59 @@
+<script type="text/javascript">
+    RED.nodes.registerType('{{ basename }}', {
+        category: 'config',
+        defaults: {
+            name: {
+                value: "",
+                required: true
+            },
+            partials: {
+                value: [],
+            }
+        },
+        credentials: {
+            token: {type: "text"},
+        },
+        exportable: false,
+        label: function () {
+            return this.name || 'Client';
+        },
+        oneditprepare: function () {
+            let select = $('#input-config-input-partials');
+            (this.partials || []).forEach((v) => {
+                select.find(`option[value="${v}"]`).attr('selected', '');
+            });
+            $('#btn-clear-partials').on('click', function(){
+                $('#input-config-input-partials')
+                        .find('option')
+                        .removeAttr('selected');
+            });
+        },
+        oneditsave: function () {
+            this.partials = Array.from(
+                    $('#input-config-input-partials')
+                            .find('option:selected')
+                            .map(function(){return this.value;})
+            );
+        },
+        paletteLabel: 'Client'
+    });
+</script>
+<script type="text/html" data-template-name="{{basename}}">
+        {{> input-field property="name" label="Name" placeholder="Name" config=true }}
+        {{> input-field property="token" label="Token" placeholder="Discord Token" config=true type='password' }}
+    <div class="form-row">
+        <label for="input-config-input-partials">Enable Partials:</label>
+        <select id="input-config-input-partials" multiple>
+            {{#each data.partials }}
+                <option value="{{@key}}">{{this}}</option>
+            {{/each}}
+        </select>
+        <button type="button" id="btn-clear-partials">Clear</button>
+    </div>
+    <p>Please refer to <a href="https://discord.com/developers/docs/intro#bots-and-apps" target="_blank">Discord Bot and
+        Application</a> for more details</p>
+</script>
+<script type="text/html" data-help-name="{{basename}}">
+    <p>Discord token for bot, Please refer to <a href="https://discord.com/developers/docs/intro#bots-and-apps"
+                                                 target="_blank">Discord Bot and Application</a></p>
+</script>

@@ -1,0 +1,97 @@
+<script type="text/javascript">
+    RED.nodes.registerType('{{basename}}', {
+        category: 'discord',
+        color: '#7289da',
+        defaults: {
+            name: {
+                value: "",
+                required: false
+            },
+            client: {
+                value: "",
+                required: true,
+                type: "discord.client"
+            },
+            guild: {
+                value: "guildID",
+                required: true,
+            },
+            guildsrc: {
+                value: "msg",
+                required: true,
+            },
+            member: {
+                value: "memberID",
+                required: true,
+            },
+            membersrc: {
+                value: "msg",
+                required: true,
+            },
+            role: {
+                value: "roleID",
+                required: true,
+            },
+            rolesrc: {
+                value: "msg",
+                required: true,
+            },
+            action: {
+                value: "topic",
+                required: true,
+            },
+            actionsrc: {
+                value: "msg",
+                required: true,
+            }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "discord.png",
+        label: function () {
+            return this.name || 'Member Role';
+        },
+        paletteLabel: 'Member Role',
+        oneditprepare: function(){
+            $('#node-input-guild').typedInput({
+                default: 'msg',
+                types: ['msg', 'flow', 'global', 'env', 'str'],
+                typeField: '#node-input-guildsrc',
+            });
+            $('#node-input-member').typedInput({
+                default: 'msg',
+                types: ['msg', 'flow', 'global', 'env', 'str'],
+                typeField: '#node-input-membersrc',
+            });
+            $('#node-input-role').typedInput({
+                default: 'msg',
+                types: ['msg', 'flow', 'global', 'env', 'str'],
+                typeField: '#node-input-rolesrc',
+            });
+            $('#node-input-action').typedInput({
+                default: 'msg',
+                types: ['msg', 'flow', 'global', 'env', {
+                    value: 'str',
+                    label: 'Action',
+                    options: ['get', 'add', 'remove'],
+                }],
+                typeField: '#node-input-actionsrc',
+            });
+        }
+    });
+</script>
+<script type="text/html" data-template-name="{{basename}}">
+        {{> input-field property="name" label="Name" placeholder="Name" }}
+        {{> input-field property="client" label="Client ID" placeholder="Discord Client" }}
+        {{> input-field property="action" label="Action" }}
+        {{> input-field property="role" label="Role ID" placeholder="Role to operate" }}
+        {{> input-field property="guild" label="Guild ID" placeholder="Guild to operate" }}
+        {{> input-field property="member" label="Member ID" placeholder="Member to operate" }}
+    <input type="hidden" id="node-input-guildsrc"/>
+    <input type="hidden" id="node-input-membersrc"/>
+    <input type="hidden" id="node-input-rolesrc"/>
+    <input type="hidden" id="node-input-actionsrc"/>
+</script>
+<script type="text/html" data-help-name="{{basename}}">
+    <p>Discord guild member role operation</p>
+</script>

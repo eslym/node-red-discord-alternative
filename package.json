@@ -1,0 +1,43 @@
+{
+  "name": "node-red-discord-alternative",
+  "version": "1.0.0",
+  "description": "Yet another discord.js integration for node-red",
+  "author": "0nepeop1e",
+  "license": "MIT",
+  "keywords": ["node-red", "discord"],
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "gulp build",
+    "clean": "gulp clean",
+    "clean-build": "gulp clean-build"
+  },
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "flatted": "^3.1.1",
+    "serialize-error": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.10",
+    "@types/node-red": "^1.1.1",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "gulp-util": "^3.0.8",
+    "handlebars": "^4.7.7",
+    "json5": "^2.2.0",
+    "through2": "^4.0.2",
+    "typescript": "^4.4.2"
+  },
+  "node-red": {
+    "nodes": {
+      "discord.botUser": "dist/discord.botUser.js",
+      "discord.client": "dist/discord.client.js",
+      "discord.event": "dist/discord.event.js",
+      "discord.inject": "dist/discord.inject.js",
+      "discord.memberRole": "dist/discord.memberRole.js",
+      "discord.send": "dist/discord.send.js"
+    }
+  }
+}

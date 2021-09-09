@@ -1,0 +1,76 @@
+{
+  "events": {
+    "Channel Events": [
+      'channelCreate',
+      'channelDelete',
+      'channelPinsUpdate',
+      'channelUpdate',
+      'voiceStateUpdate'
+    ],
+    "Client Events": [
+      'ready',
+      'debug',
+      'warn',
+      'disconnect',
+      'error',
+      'rateLimit',
+      'invalidated'
+    ],
+    "Emoji Events": [
+      'emojiCreate',
+      'emojiDelete',
+      'emojiUpdate',
+    ],
+    "Guild Ban Events": [
+      'guildBanAdd',
+      'guildBanRemove',
+    ],
+    "Guild Events": [
+      'guildCreate',
+      'guildDelete',
+      'guildUnavailable',
+      'guildUpdate',
+    ],
+    "Interaction Events": [
+      'guildIntegrationsUpdate'
+    ],
+    "Guild Member Events": [
+      'guildMemberAdd',
+      'guildMemberAvailable',
+      'guildMemberRemove',
+      'guildMembersChunk',
+      'guildMemberSpeaking',
+      'guildMemberUpdate',
+      'presenceUpdate',
+      'typingStart',
+      'userUpdate',
+      'voiceStateUpdate'
+    ],
+    "Invites Events": [
+      'inviteCreate',
+      'inviteDelete'
+    ],
+    "Message Events": [
+      'message',
+      'messageDelete',
+      'messageReactionRemoveAll',
+      'messageReactionRemoveEmoji',
+      'messageDeleteBulk',
+      'messageReactionAdd',
+      'messageReactionRemove',
+      'messageUpdate'
+    ],
+    "Role Events": [
+      'roleCreate',
+      'roleDelete',
+      'roleUpdate'
+    ],
+    "Shard Events": [
+      'shardDisconnect',
+      'shardError',
+      'shardReady',
+      'shardReconnecting',
+      'shardResume',
+    ]
+  }
+}
