@@ -5,6 +5,9 @@
   "author": "0nepeop1e",
   "license": "MIT",
   "keywords": ["node-red", "discord"],
+  "repository": {
+    "url": "https://github.com/eslym/node-red-discord-alternative"
+  },
   "files": [
     "dist/**/*"
   ],
